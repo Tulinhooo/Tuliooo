@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastro de Usuário</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <h1>Cadastro de Usuário</h1>
+
+        <p>Preencha os dados abaixo:</p>
+
+        <form id="formCadastro">
+
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" required>
+
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" required>
+
+            <label for="senha">Senha:</label>
+            <input
+                type="password"
+                id="senha"
+                placeholder="Digite a senha"
+                required
+            >
+
+            <label for="endereco">Endereço:</label>
+            <input type="text" id="endereco" required>
+
+            <label for="cpf">CPF:</label>
+            <input
+                type="text"
+                id="cpf"
+                placeholder="000.000.000.00"
+                maxlength="14"
+                inputmode="numeric"
+                required
+            >
+
+            <label for="imagem">Imagem:</label>
+            <input
+                type="file"
+                id="imagem"
+                accept="image/*"
+            >
+
+            <div id="preview"></div>
+
+            <button type="submit">
+                Cadastrar
+            </button>
+
+        </form>
+
+        <p id="mensagem"></p>
+
+    </main>
+
+
+    <script>
+
+        // PEGAR ELEMENTOS DO HTML
+        const form = document.getElementById("formCadastro");
+        const senha = document.getElementById("senha");
+        const mensagem = document.getElementById("mensagem");
+        const cpf = document.getElementById("cpf");
+
+
+        // CPF ACEITA SOMENTE NÚMEROS E PONTO
+        cpf.addEventListener("input", function() {
+
+            cpf.value = cpf.value.replace(/[^0-9.]/g, "");
+
+        });
+
+
+        // CADASTRO
+        form.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+
+            // SENHA CORRETA
+            const senhaCorreta = "123456";
+
+
+            // VERIFICAR SENHA
+            if (senha.value !== senhaCorreta) {
+
+                mensagem.textContent = "Acesso negado";
+                mensagem.style.color = "red";
+
+                return;
+
+            }
+
+
+            // ACESSO ACEITADO
+            mensagem.textContent = "Acesso aceitado";
+            mensagem.style.color = "green";
+
+
+            // PEGAR OS DADOS
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+            const endereco = document.getElementById("endereco").value;
+            const cpfValor = cpf.value;
+
+
+            // ESCONDER A SENHA NO TXT
+            const senhaOculta = "*".repeat(senha.value.length);
+
+
+            // CRIAR TEXTO
+            const dados =
+                "CADASTRO DE USUÁRIO\n" +
+                "====================\n\n" +
+                "Nome: " + nome + "\n" +
+                "E-mail: " + email + "\n" +
+                "Senha: " + senhaOculta + "\n" +
+                "Endereço: " + endereco + "\n" +
+                "CPF: " + cpfValor + "\n\n" +
+                "Acesso aceitado.\n" +
+                "Cadastro realizado com sucesso.";
+
+
+            // CRIAR ARQUIVO TXT
+            const arquivo = new Blob(
+                [dados],
+                {
+                    type: "text/plain;charset=utf-8"
+                }
+            );
+
+
+            // CRIAR LINK DE DOWNLOAD
+            const link = document.createElement("a");
+
+            link.href = URL.createObjectURL(arquivo);
+
+            link.download = "cadastro.txt";
+
+
+            // BAIXAR O ARQUIVO
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+
+            // LIBERAR MEMÓRIA
+            setTimeout(function() {
+
+                URL.revokeObjectURL(link.href);
+
+            }, 100);
+
+        });
+
+    </script>
+
+</body>
+
+</html>
+
